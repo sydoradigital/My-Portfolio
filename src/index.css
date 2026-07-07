@@ -320,14 +320,16 @@ nav:hover {
 
 /* ---------- HERO ---------- */
 #hero {
-  height: 100vh;
-  padding: 0;
+  position: relative;
+  min-height: 100vh;
+  padding: 120px 20px 140px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   max-width: none;
+  box-sizing: border-box;
 }
 
 .hero-eyebrow {
@@ -530,7 +532,12 @@ nav:hover {
   align-items: center;
   gap: 10px;
   opacity: 0;
-  animation: fadeUp 1s ease 1.4s forwards;
+  animation: scrollFadeUp 1s ease 1.4s forwards;
+}
+
+@keyframes scrollFadeUp {
+  from { opacity: 0; transform: translate(-50%, 24px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
 }
 
 .scroll-line {
@@ -1509,6 +1516,134 @@ footer {
   letter-spacing: 0.05em;
 }
 
+.footer-social-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  color: #dfe4ff;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  text-decoration: none;
+}
+
+.footer-social-icon-btn:hover {
+  border-color: var(--electric-cyan);
+  color: var(--electric-cyan);
+  background: rgba(63, 252, 241, 0.08);
+  box-shadow: 0 0 15px rgba(63, 252, 241, 0.3);
+  transform: translateY(-3px);
+}
+
+/* Brand Colors for Footer Icons */
+.footer-social-icon-btn.linkedin-brand {
+  background: #0077B5;
+  border-color: #0077B5;
+  color: #ffffff;
+}
+.footer-social-icon-btn.linkedin-brand:hover {
+  background: #005987;
+  border-color: #005987;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 119, 181, 0.6);
+  transform: translateY(-3px);
+}
+
+.footer-social-icon-btn.instagram-brand {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  border-color: transparent;
+  color: #ffffff;
+}
+.footer-social-icon-btn.instagram-brand:hover {
+  background: linear-gradient(45deg, #f3a14e 0%, #ec7e56 25%, #e1405a 50%, #d43b79 75%, #c52d97 100%);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(220, 39, 67, 0.6);
+  transform: translateY(-3px);
+}
+
+.footer-social-icon-btn.facebook-brand {
+  background: #1877F2;
+  border-color: #1877F2;
+  color: #ffffff;
+}
+.footer-social-icon-btn.facebook-brand:hover {
+  background: #1565C0;
+  border-color: #1565C0;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(24, 119, 242, 0.6);
+  transform: translateY(-3px);
+}
+
+.footer-social-icon-btn.x-brand {
+  background: #000000;
+  border-color: #333333;
+  color: #ffffff;
+}
+.footer-social-icon-btn.x-brand:hover {
+  background: #111111;
+  border-color: #555555;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.35);
+  transform: translateY(-3px);
+}
+
+.footer-social-icon-btn.whatsapp-brand {
+  background: #25D366;
+  border-color: #25D366;
+  color: #ffffff;
+}
+.footer-social-icon-btn.whatsapp-brand:hover {
+  background: #20ba5a;
+  border-color: #20ba5a;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(37, 211, 102, 0.6);
+  transform: translateY(-3px);
+}
+
+.footer-social-icon-btn.email-brand {
+  background: #EA4335;
+  border-color: #EA4335;
+  color: #ffffff;
+}
+.footer-social-icon-btn.email-brand:hover {
+  background: #d63629;
+  border-color: #d63629;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(234, 67, 53, 0.6);
+  transform: translateY(-3px);
+}
+
+.footer-social-icon-btn.phone-brand {
+  background: #007aff;
+  border-color: #007aff;
+  color: #ffffff;
+}
+.footer-social-icon-btn.phone-brand:hover {
+  background: #0066d6;
+  border-color: #0066d6;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 122, 255, 0.6);
+  transform: translateY(-3px);
+}
+
+.internal-link {
+  color: var(--electric-cyan);
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px dashed rgba(63, 252, 241, 0.4);
+  transition: all 0.3s ease;
+}
+
+.internal-link:hover {
+  color: #ffffff;
+  border-bottom: 1px solid var(--electric-cyan);
+  text-shadow: 0 0 10px rgba(63, 252, 241, 0.8);
+}
+
 /* misc */
 .section-head {
   max-width: 700px;
@@ -1883,7 +2018,7 @@ section {
   #hero {
     height: auto;
     min-height: 100vh;
-    padding: 120px 6vw 60px;
+    padding: 120px 6vw 140px;
   }
 }
 

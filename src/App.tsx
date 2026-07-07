@@ -14,7 +14,13 @@ import {
   Compass,
   Zap,
   BookOpen,
-  Camera
+  Camera,
+  Linkedin,
+  Instagram,
+  Facebook,
+  Twitter,
+  Phone,
+  MessageCircle
 } from 'lucide-react';
 
 // Categories Data
@@ -78,7 +84,9 @@ export default function App() {
 
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [libsLoaded, setLibsLoaded] = useState<boolean>(false);
 
   // Custom Interactive Profile Avatar personalization (persisted locally)
@@ -1287,13 +1295,39 @@ export default function App() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormSubmitted(true);
-    setFormData({ name: '', email: '', message: '' });
-    setTimeout(() => {
-      setFormSubmitted(false);
-    }, 5000);
+    setIsSubmitting(true);
+    setFormError(null);
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/sulaimanmusthaq99@gmail.com", {
+        method: "POST",
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          message: formData.message,
+          _subject: `New Message from ${formData.name} - SMS Portfolio`
+        })
+      });
+      if (response.ok) {
+        setFormSubmitted(true);
+        setFormData({ name: '', email: '', phone: '', message: '' });
+        setTimeout(() => {
+          setFormSubmitted(false);
+        }, 5000);
+      } else {
+        throw new Error("Failed to send message. Please try again.");
+      }
+    } catch (err: any) {
+      setFormError(err.message || "Something went wrong.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -1340,12 +1374,12 @@ export default function App() {
           </h1>
           <div className="hero-roles animate-pulse-glitch" id="hero-roles">
             <span>Digital Marketing Head</span>
-            <span>Growth Specialist</span>
+            <span>SEO, GEO, AEO &amp; SEM Specialist</span>
             <span>AI Automation Specialist</span>
             <span>Web Developer</span>
           </div>
           <p className="hero-tagline" id="hero-tagline">
-            AI-driven digital marketing leader and full-stack web developer. I turn commercial strategy into high-impact growth pipelines, from lightning-fast conversion funnels to fully automated, AI-augmented marketing operations.
+            AI-driven digital growth leader specializing in <a href="#command" className="internal-link">SEO, GEO, AEO, and SEM</a>. I build lightning-fast web conversion funnels and automated, <a href="#lab" className="internal-link">AI-augmented marketing operations</a> that dominate both traditional search and generative engine discoveries.
           </p>
 
           <div className="cta cta-row" id="hero-cta">
@@ -1440,9 +1474,9 @@ export default function App() {
             </div>
 
             <div className="about-text reveal" id="about-text-content">
-              <p>Results-driven Digital Marketing Professional with experience across Digital Marketing, SEO, SEM, Lead Generation, Website Development, and Marketing Automation.</p>
-              <p>Skilled in creating high-converting landing pages, optimizing websites for search engines, and implementing AI-powered marketing solutions that turn traffic into pipeline.</p>
-              <p>Passionate about leveraging technology to generate qualified leads and improve business growth — bridging the gap between creative strategy and technical execution.</p>
+              <p>Results-driven Digital Marketing Professional with expertise across <a href="#command" className="internal-link">SEO, GEO, AEO, and SEM</a>, alongside Lead Generation, <a href="#projects" className="internal-link">Website Development</a>, and AI-Powered <a href="#lab" className="internal-link">Marketing Automation</a>.</p>
+              <p>Skilled in designing high-converting, lightning-fast landing pages, optimizing brand visibility across both traditional search engines and modern Generative AI search systems (Gemini, ChatGPT, Perplexity), and implementing automated marketing flows that transform intent-driven traffic into robust revenue pipelines.</p>
+              <p>Passionate about leveraging modern technologies to generate qualified leads and maximize digital business growth — bridging the gap between creative search optimization and deep technical execution.</p>
             </div>
           </div>
 
@@ -1516,13 +1550,12 @@ export default function App() {
                 <div className="station-role">Senior Digital Marketing Executive</div>
                 <div className="station-dates">June 2026 – Present</div>
                 <ul>
-                  <li>Lead digital marketing strategy for premium real estate projects.</li>
-                  <li>Manage SEM, SEO, lead generation, and social media campaigns.</li>
-                  <li>Build high-converting landing pages.</li>
-                  <li>Manage website content using Prismic CMS.</li>
-                  <li>Develop AI-powered marketing workflows and lead generation systems.</li>
-                  <li>Optimize campaign performance using analytics and conversion tracking.</li>
-                  <li>Coordinate branding, creative content, and automation initiatives.</li>
+                  <li>Lead comprehensive digital growth strategies covering SEO, GEO, AEO, and SEM for premium real estate projects.</li>
+                  <li>Drive organic search and Paid Search (SEM) campaigns, optimizing content for traditional platforms and modern Generative Search Engines (Gemini, ChatGPT, Perplexity).</li>
+                  <li>Build conversion-rate optimized (CRO) landing pages with perfect site performance score.</li>
+                  <li>Manage real-time content delivery systems and modern headless integrations (Prismic CMS).</li>
+                  <li>Engineer automated workflows for lead capturing, qualifying, and CRM routing.</li>
+                  <li>Leverage advanced analytics (GA4/GTM) to track and optimize visibility across all discovery platforms.</li>
                 </ul>
               </div>
             </div>
@@ -1853,6 +1886,14 @@ export default function App() {
               onChange={handleFormChange}
               id="input-email"
             />
+            <input 
+              type="tel" 
+              name="phone"
+              placeholder="Your Phone Number" 
+              value={formData.phone}
+              onChange={handleFormChange}
+              id="input-phone"
+            />
             <textarea 
               rows={4} 
               name="message"
@@ -1861,27 +1902,63 @@ export default function App() {
               onChange={handleFormChange}
               id="input-message"
             />
-            <button type="submit" className="magnetic-btn w-full text-center flex justify-center" data-magnetic style={{ justifyContent: 'center' }} id="btn-submit">
-              Send Message <span className="arrow">→</span>
+            <button type="submit" disabled={isSubmitting} className="magnetic-btn w-full text-center flex justify-center disabled:opacity-50" data-magnetic style={{ justifyContent: 'center' }} id="btn-submit">
+              {isSubmitting ? 'Sending...' : 'Send Message'} <span className="arrow">→</span>
             </button>
             <p id="form-note" style={{ opacity: formSubmitted ? 1 : 0, textAlign: 'center', color: 'var(--electric-cyan)', fontSize: '0.85rem', transition: 'opacity .4s' }}>
               Message sent successfully! Connecting with SMS Sulaiman Musthaq.
             </p>
+            {formError && (
+              <p id="form-error" style={{ textAlign: 'center', color: '#ff4d4d', fontSize: '0.85rem', marginTop: '10px' }}>
+                {formError}
+              </p>
+            )}
           </form>
 
           <div className="contact-links reveal" id="contact-links">
-            <a href="mailto:sulaimanmusthaq99@gmail.com" id="link-email">Email</a>
-            <a href="tel:+919578523280" id="link-phone">Phone</a>
-            <a href="https://wa.me/919578523280" target="_blank" rel="noopener noreferrer" id="link-whatsapp">WhatsApp</a>
-            <a href="https://www.linkedin.com/in/sulaiman-musthaq" target="_blank" rel="noopener noreferrer" id="link-linkedin">LinkedIn</a>
-            <a href="https://www.instagram.com/sulaiman_musthaq_18" target="_blank" rel="noopener noreferrer" id="link-instagram">Instagram</a>
-            <a href="https://www.facebook.com/sms.sulaiman.musthaq/" target="_blank" rel="noopener noreferrer" id="link-facebook">Facebook</a>
-            <a href="https://x.com/SulaimanMusthaq" target="_blank" rel="noopener noreferrer" id="link-x">X</a>
-            <button onClick={() => setIsResumeOpen(true)} className="cursor-pointer hover:text-[var(--electric-cyan)] transition-colors" id="link-resume">View &amp; Print Resume</button>
+            <button 
+              onClick={() => setIsResumeOpen(true)} 
+              className="magnetic-btn cursor-pointer" 
+              data-magnetic 
+              id="link-resume"
+            >
+              View &amp; Print Resume <span className="arrow">↓</span>
+            </button>
           </div>
         </section>
-
-        <footer id="app-footer">© 2026 SMS Sulaiman Musthaq — Chennai, India · Crafted as a premium digital experience</footer>
+ 
+        <footer id="app-footer">
+          <div className="footer-socials flex justify-center gap-4 mb-6" style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: '24px' }}>
+            <a href="https://www.linkedin.com/in/sulaiman-musthaq" target="_blank" rel="noopener noreferrer" className="footer-social-icon-btn linkedin-brand" id="footer-social-linkedin" title="LinkedIn">
+              <Linkedin size={18} />
+            </a>
+            <a href="https://www.instagram.com/sulaiman_musthaq_18" target="_blank" rel="noopener noreferrer" className="footer-social-icon-btn instagram-brand" id="footer-social-instagram" title="Instagram">
+              <Instagram size={18} />
+            </a>
+            <a href="https://www.facebook.com/sms.sulaiman.musthaq/" target="_blank" rel="noopener noreferrer" className="footer-social-icon-btn facebook-brand" id="footer-social-facebook" title="Facebook">
+              <Facebook size={18} />
+            </a>
+            <a href="https://x.com/SulaimanMusthaq" target="_blank" rel="noopener noreferrer" className="footer-social-icon-btn x-brand" id="footer-social-x" title="X (Twitter)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
+              </svg>
+            </a>
+            <a href="https://wa.me/919578523280" target="_blank" rel="noopener noreferrer" className="footer-social-icon-btn whatsapp-brand" id="footer-social-whatsapp" title="WhatsApp">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.458 5.704 1.459h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+              </svg>
+            </a>
+            <a href="mailto:sulaimanmusthaq99@gmail.com" className="footer-social-icon-btn email-brand" id="footer-social-email" title="Email">
+              <Mail size={18} />
+            </a>
+            <a href="tel:+919578523280" className="footer-social-icon-btn phone-brand" id="footer-social-phone" title="Phone">
+              <Phone size={18} />
+            </a>
+          </div>
+          <p className="footer-copyright" style={{ margin: 0, opacity: 0.8 }}>
+            © 2026 SMS Sulaiman Musthaq — Chennai, India · Crafted as a premium digital experience
+          </p>
+        </footer>
       </main>
 
       {/* CASE STUDY MODALS */}
@@ -1976,7 +2053,7 @@ export default function App() {
           <div className="resume-header-row">
             <div className="resume-header-left">
               <h2>SMS Sulaiman Musthaq</h2>
-              <p>Digital Marketing Manager</p>
+              <p>SEO, GEO, AEO &amp; SEM Specialist</p>
             </div>
             
             <div className="resume-controls">
@@ -2025,14 +2102,14 @@ export default function App() {
               <div className="resume-section-card">
                 <div className="resume-sec-title"><span></span>Professional Summary</div>
                 <p style={{ margin: 0, lineHeight: '1.6', color: '#aeb6da' }}>
-                  Digital marketing professional and web developer with 4+ years leading multi-channel strategy across real estate and consumer brands. Manages the full digital stack — technical SEO, search engine marketing (SEM), conversion-rate optimization (CRO), GA4/GTM tracking, and CRM-driven lead workflows — and builds AI-assisted automation to cut manual marketing overhead. Track record of shipping high-converting landing pages, custom interactive web applications, and running organic/search media campaigns end to end, from development to analytics.
+                  Digital marketing professional and web developer with 4+ years leading multi-channel strategy across real estate and consumer brands. Manages the full digital stack — including Search Engine Optimization (SEO), Generative Engine Optimization (GEO), Answer Engine Optimization (AEO), Search Engine Marketing (SEM), conversion-rate optimization (CRO), GA4/GTM tracking, and CRM-driven lead workflows — and builds AI-assisted automation to cut manual marketing overhead. Track record of shipping high-converting landing pages, custom interactive web applications, and running organic, search, and AI-optimized engine campaigns end to end, from development to analytics.
                 </p>
               </div>
 
               <div className="resume-section-card">
                 <div className="resume-sec-title"><span></span>Core Competencies</div>
                 <div className="flex flex-wrap gap-2">
-                  {['Digital Marketing Strategy', 'SEO & SEM', 'Lead Generation', 'Landing Page & CRO', 'Marketing Automation', 'GA4 & GTM', 'CRM Management', 'Content Marketing', 'Data Analytics & Reporting', 'AI Marketing Workflows'].map((comp, idx) => (
+                  {['SEO, GEO, AEO & SEM Strategy', 'Generative Engine Optimization (GEO)', 'Answer Engine Optimization (AEO)', 'Search Engine Optimization (SEO)', 'Search Engine Marketing (SEM)', 'Lead Generation & CRO', 'Landing Page Optimization', 'Marketing Automation', 'GA4 & GTM Tracking', 'AI Marketing Workflows'].map((comp, idx) => (
                     <span key={idx} style={{ fontSize: '0.72rem', padding: '6px 12px', borderRadius: '100px', background: 'rgba(63, 252, 241, 0.06)', border: '1px solid rgba(63, 252, 241, 0.15)', color: 'var(--electric-cyan)', fontFamily: 'JetBrains Mono, monospace' }}>
                       {comp}
                     </span>
@@ -2053,10 +2130,10 @@ export default function App() {
                     <span className="resume-exp-date">Jun 2026 – Present</span>
                   </div>
                   <ul className="resume-exp-bullets">
-                    <li>Lead digital marketing for premium real estate projects, overseeing strategy across SEO, content marketing, and CRM-driven lead nurturing.</li>
-                    <li>Plan and optimize organic and search engine marketing (SEM) campaigns, managing user journey testing and conversion funnels to improve lead quality.</li>
-                    <li>Build SEO-optimized, conversion-focused landing pages and manage site content through Prismic CMS.</li>
-                    <li>Configure GA4 and GTM tracking to give sales and leadership visibility into funnel performance.</li>
+                    <li>Lead comprehensive digital growth strategies covering SEO, GEO, AEO, and SEM for premium real estate projects, aligning with modern generative search behavior.</li>
+                    <li>Plan and optimize organic search and Search Engine Marketing (SEM) campaigns, managing generative search engine visibility (ChatGPT, Gemini, Perplexity) and conversion rate optimization (CRO).</li>
+                    <li>Build SEO-optimized, highly interactive, and lightning-fast landing pages with content managed through Prismic CMS.</li>
+                    <li>Configure GA4 and GTM tracking to give sales and leadership real-time visibility into funnel performance across all discovery channels.</li>
                     <li>Design AI-assisted marketing automation workflows, reducing manual effort in lead qualification and campaign reporting.</li>
                   </ul>
                 </div>
@@ -2163,7 +2240,7 @@ export default function App() {
             <div className="resume-body-classic text-left">
               <div className="resume-classic-header">
                 <h3>SMS SULAIMAN MUSTHAQ</h3>
-                <div className="classic-sub">Digital Marketing Manager | Growth Strategist | AI-Enabled Marketing Automation</div>
+                <div className="classic-sub">Digital Marketing &amp; SEO/GEO/AEO/SEM Specialist | Growth Strategist | AI-Enabled Marketing Automation</div>
                 <div className="classic-meta">
                   Chennai, Tamil Nadu, India &bull; +91 95785 23280 &bull; sulaimanmusthaq99@gmail.com &bull; linkedin.com/in/sulaiman-musthaq
                 </div>
@@ -2172,14 +2249,14 @@ export default function App() {
               <div className="resume-classic-sec">
                 <div className="resume-classic-sec-title">Professional Summary</div>
                 <p style={{ margin: 0 }}>
-                  Digital marketing professional and web developer with 4+ years leading multi-channel strategy across real estate and consumer brands. Manages the full digital stack — technical SEO, search engine marketing (SEM), conversion-rate optimization (CRO), GA4/GTM tracking, and CRM-driven lead workflows — and builds AI-assisted automation to cut manual marketing overhead. Track record of shipping high-converting landing pages, custom interactive web applications, and running organic/search media campaigns end to end, from development to analytics.
+                  Digital marketing professional and web developer with 4+ years leading multi-channel strategy across real estate and consumer brands. Manages the full digital stack — including Search Engine Optimization (SEO), Generative Engine Optimization (GEO), Answer Engine Optimization (AEO), Search Engine Marketing (SEM), conversion-rate optimization (CRO), GA4/GTM tracking, and CRM-driven lead workflows — and builds AI-assisted automation to cut manual marketing overhead. Track record of shipping high-converting landing pages, custom interactive web applications, and running organic, search, and AI-optimized engine campaigns end to end, from development to analytics.
                 </p>
               </div>
 
               <div className="resume-classic-sec">
                 <div className="resume-classic-sec-title">Core Competencies</div>
                 <p style={{ margin: 0, fontWeight: 500 }}>
-                  Digital Marketing Strategy &bull; SEO &amp; SEM &bull; Lead Generation &bull; Landing Page &amp; CRO &bull; Marketing Automation &bull; GA4 &amp; GTM &bull; CRM Management &bull; Content Marketing &bull; Data Analytics &amp; Reporting &bull; AI Marketing Workflows
+                  SEO, GEO, AEO &amp; SEM Strategy &bull; Generative Engine Optimization (GEO) &bull; Answer Engine Optimization (AEO) &bull; Search Engine Optimization (SEO) &bull; Search Engine Marketing (SEM) &bull; Lead Generation &amp; CRO &bull; Landing Page Optimization &bull; Marketing Automation &bull; GA4 &amp; GTM Tracking &bull; AI Marketing Workflows
                 </p>
               </div>
 
@@ -2192,10 +2269,10 @@ export default function App() {
                     <span>Jun 2026 – Present</span>
                   </div>
                   <ul className="resume-classic-list">
-                    <li>Lead digital marketing for premium real estate projects, overseeing strategy across SEO, content marketing, and CRM-driven lead nurturing.</li>
-                    <li>Plan and optimize organic and search engine marketing (SEM) campaigns, managing user journey testing and conversion funnels to improve lead quality.</li>
-                    <li>Build SEO-optimized, conversion-focused landing pages and manage site content through Prismic CMS.</li>
-                    <li>Configure GA4 and GTM tracking to give sales and leadership visibility into funnel performance.</li>
+                    <li>Lead comprehensive digital growth strategies covering SEO, GEO, AEO, and SEM for premium real estate projects, aligning with modern generative search behavior.</li>
+                    <li>Plan and optimize organic search and Search Engine Marketing (SEM) campaigns, managing generative search engine visibility (ChatGPT, Gemini, Perplexity) and conversion rate optimization (CRO).</li>
+                    <li>Build SEO-optimized, highly interactive, and lightning-fast landing pages with content managed through Prismic CMS.</li>
+                    <li>Configure GA4 and GTM tracking to give sales and leadership real-time visibility into funnel performance across all discovery channels.</li>
                     <li>Design AI-assisted marketing automation workflows, reducing manual effort in lead qualification and campaign reporting.</li>
                   </ul>
                 </div>
